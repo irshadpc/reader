@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity
 } from "react-native";
-import { QRscanner } from "react-native-qr-scanner";
+import { QRscanner } from "./QRScanner";
 import { ToastAndroid } from "react-native";
 
 export default class Scanner extends Component {

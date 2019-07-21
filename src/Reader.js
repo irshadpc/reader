@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity
 } from "react-native";
-import { QRreader } from "react-native-qr-scanner";
+import { QRreader } from "./QRScanner";
 import ImagePicker from "react-native-image-picker";
 
 export default class Scanner extends Component {
