@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -11,16 +11,16 @@ import {
   Platform,
   PixelRatio,
   StatusBar
-} from 'react-native';
+} from "react-native";
 /**
  * Scanning interface mask
  * Write a separate class for easy copying
  */
 export default class QRScannerView extends Component {
   static defaultProps = {
-    maskColor: '#0000004D',
-    cornerColor: '#22ff00',
-    borderColor: '#000000',
+    maskColor: "#0000004D",
+    cornerColor: "#22ff00",
+    borderColor: "#000000",
     rectHeight: 200,
     rectWidth: 200,
     borderWidth: 0,
@@ -30,15 +30,15 @@ export default class QRScannerView extends Component {
     isCornerOffset: true,
     bottomHeight: 100,
     scanBarAnimateTime: 2500,
-    scanBarColor: '#22ff00',
+    scanBarColor: "#22ff00",
     scanBarImage: null,
     scanBarHeight: 1.5,
     scanBarMargin: 6,
-    hintText: 'QR code/The barcode is placed in the box and can be scanned automatically.',
+    hintText: "", // hint
     hintTextStyle: {
-      color: '#fff',
+      color: "#fff",
       fontSize: 14,
-      backgroundColor: 'transparent'
+      backgroundColor: "transparent"
     },
     hintTextPosition: 130,
     isShowScanBar: true
@@ -51,83 +51,94 @@ export default class QRScannerView extends Component {
       topHeight: 0,
       leftWidth: 0,
       animatedValue: new Animated.Value(0)
-    }
+    };
   }
 
   //Get the background color
   getBackgroundColor = () => {
-    return ({backgroundColor: this.props.maskColor});
-  }
+    return { backgroundColor: this.props.maskColor };
+  };
 
   // Get the size of the scan box background
   getRectSize = () => {
-    return ({height: this.props.rectHeight, width: this.props.rectWidth});
-  }
+    return { height: this.props.rectHeight, width: this.props.rectWidth };
+  };
 
   // Get the scan box border size
   getBorderSize = () => {
     if (this.props.isCornerOffset) {
-      return ({
+      return {
         height: this.props.rectHeight - this.props.cornerOffsetSize * 2,
         width: this.props.rectWidth - this.props.cornerOffsetSize * 2
-      });
+      };
     } else {
-      return ({height: this.props.rectHeight, width: this.props.rectWidth});
+      return { height: this.props.rectHeight, width: this.props.rectWidth };
     }
-  }
+  };
 
   // Get the color of the corner of the scan box
   getCornerColor = () => {
-    return ({borderColor: this.props.cornerColor});
-  }
+    return { borderColor: this.props.cornerColor };
+  };
 
   // Get the size of the corner of the scan box
   getCornerSize = () => {
-    return ({height: this.props.cornerBorderLength, width: this.props.cornerBorderLength});
-  }
+    return {
+      height: this.props.cornerBorderLength,
+      width: this.props.cornerBorderLength
+    };
+  };
 
   // Get the scan box size
   getBorderWidth = () => {
-    return ({borderWidth: this.props.borderWidth});
-  }
+    return { borderWidth: this.props.borderWidth };
+  };
 
   // Get the scan box color
   getBorderColor = () => {
-    return ({borderColor: this.props.borderColor});
-  }
+    return { borderColor: this.props.borderColor };
+  };
 
   // Measure the size of the entire scanning component
-  measureTotalSize = (e) => {
+  measureTotalSize = e => {
     let totalSize = e.layout;
-    this.setState({topWidth: totalSize.width})
-  }
+    this.setState({ topWidth: totalSize.width });
+  };
 
   // Measure the position of the scan box
-  measureRectPosition = (e) => {
+  measureRectPosition = e => {
     let rectSize = e.layout;
-    rectSize.x += this.props.finderX
-    rectSize.y += this.props.finderY
-    this.props.returnSize(rectSize)
-    this.setState({topHeight: rectSize.y, leftWidth: rectSize.x})
-  }
+    rectSize.x += this.props.finderX;
+    rectSize.y += this.props.finderY;
+    this.props.returnSize(rectSize);
+    this.setState({ topHeight: rectSize.y, leftWidth: rectSize.x });
+  };
 
   // Get the top mask height
   getTopMaskHeight = () => {
     if (this.props.isCornerOffset) {
-      return this.state.topHeight + this.props.rectHeight - this.props.cornerOffsetSize;
+      return (
+        this.state.topHeight +
+        this.props.rectHeight -
+        this.props.cornerOffsetSize
+      );
     } else {
       return this.state.topHeight + this.props.rectHeight;
     }
-  }
+  };
 
   //获取底部遮罩高度
   getBottomMaskHeight = () => {
     if (this.props.isCornerOffset) {
-      return this.props.rectHeight + this.state.topHeight - this.props.cornerOffsetSize;
+      return (
+        this.props.rectHeight +
+        this.state.topHeight -
+        this.props.cornerOffsetSize
+      );
     } else {
       return this.state.topHeight + this.props.rectHeight;
     }
-  }
+  };
 
   //获取左右两边遮罩高度
   getSideMaskHeight = () => {
@@ -136,7 +147,7 @@ export default class QRScannerView extends Component {
     } else {
       return this.props.rectHeight;
     }
-  }
+  };
 
   // Get the width of the left and right masks
   getSideMaskWidth = () => {
@@ -145,41 +156,50 @@ export default class QRScannerView extends Component {
     } else {
       return this.state.leftWidth;
     }
-  }
+  };
 
   getBottomHeight = () => {
-    return ({bottom: this.props.bottomHeight});
-  }
+    return { bottom: this.props.bottomHeight };
+  };
 
   getScanBarMargin = () => {
-    return ({marginRight: this.props.scanBarMargin, marginLeft: this.props.scanBarMargin})
-  }
+    return {
+      marginRight: this.props.scanBarMargin,
+      marginLeft: this.props.scanBarMargin
+    };
+  };
 
   getScanImageWidth = () => {
-    return this.props.rectWidth - this.props.scanBarMargin * 2
-  }
+    return this.props.rectWidth - this.props.scanBarMargin * 2;
+  };
 
   // Draw scan lines
   _renderScanBar = () => {
-    if (!this.props.isShowScanBar) 
-      return;
+    if (!this.props.isShowScanBar) return;
     if (this.props.scanBarImage) {
-      return <Image
-        style={{
-        resizeMode: 'contain',
-        width: this.getScanImageWidth()
-      }}
-        source={this.props.scanBarImage}/>
+      return (
+        <Image
+          style={{
+            resizeMode: "contain",
+            width: this.getScanImageWidth()
+          }}
+          source={this.props.scanBarImage}
+        />
+      );
     } else {
-      return <View
-        style={[
-        this.getScanBarMargin(), {
-          backgroundColor: this.props.scanBarColor,
-          height: this.props.scanBarHeight
-        }
-      ]}/>
+      return (
+        <View
+          style={[
+            this.getScanBarMargin(),
+            {
+              backgroundColor: this.props.scanBarColor,
+              height: this.props.scanBarHeight
+            }
+          ]}
+        />
+      );
     }
-  }
+  };
 
   render() {
     const animatedStyle = {
@@ -191,113 +211,143 @@ export default class QRScannerView extends Component {
     };
     return (
       <View
-        onLayout={({nativeEvent: e}) => this.measureTotalSize(e)}
-        style={[
-        styles.container, this.getBottomHeight()
-      ]}>
+        onLayout={({ nativeEvent: e }) => this.measureTotalSize(e)}
+        style={[styles.container, this.getBottomHeight()]}
+      >
         {/* <View style={{flex:1}}></View> */}
         <View
           style={[
-          styles.viewfinder, this.getRectSize(),{top:this.props.finderY,left:this.props.finderX}
+            styles.viewfinder,
+            this.getRectSize(),
+            { top: this.props.finderY, left: this.props.finderX }
           ]}
-          onLayout={({nativeEvent: e}) => this.measureRectPosition(e)}>
+          onLayout={({ nativeEvent: e }) => this.measureRectPosition(e)}
+        >
           <View
             style={[
-            this.getBorderSize(),
-            this.getBorderColor(),
-            this.getBorderWidth()
-          ]}>
-
+              this.getBorderSize(),
+              this.getBorderColor(),
+              this.getBorderWidth()
+            ]}
+          >
             <Animated.View style={[animatedStyle]}>
               {this._renderScanBar()}
             </Animated.View>
-
           </View>
           <View
             style={[
-            this.getCornerColor(),
-            this.getCornerSize(),
-            styles.topLeftCorner, {
-              borderLeftWidth: this.props.cornerBorderWidth,
-              borderTopWidth: this.props.cornerBorderWidth
-            }
-          ]}/>
+              this.getCornerColor(),
+              this.getCornerSize(),
+              styles.topLeftCorner,
+              {
+                borderLeftWidth: this.props.cornerBorderWidth,
+                borderTopWidth: this.props.cornerBorderWidth
+              }
+            ]}
+          />
           <View
             style={[
-            this.getCornerColor(),
-            this.getCornerSize(),
-            styles.topRightCorner, {
-              borderRightWidth: this.props.cornerBorderWidth,
-              borderTopWidth: this.props.cornerBorderWidth
-            }
-          ]}/>
+              this.getCornerColor(),
+              this.getCornerSize(),
+              styles.topRightCorner,
+              {
+                borderRightWidth: this.props.cornerBorderWidth,
+                borderTopWidth: this.props.cornerBorderWidth
+              }
+            ]}
+          />
           <View
             style={[
-            this.getCornerColor(),
-            this.getCornerSize(),
-            styles.bottomLeftCorner, {
-              borderLeftWidth: this.props.cornerBorderWidth,
-              borderBottomWidth: this.props.cornerBorderWidth
-            }
-          ]}/>
+              this.getCornerColor(),
+              this.getCornerSize(),
+              styles.bottomLeftCorner,
+              {
+                borderLeftWidth: this.props.cornerBorderWidth,
+                borderBottomWidth: this.props.cornerBorderWidth
+              }
+            ]}
+          />
           <View
             style={[
-            this.getCornerColor(),
-            this.getCornerSize(),
-            styles.bottomRightCorner, {
-              borderRightWidth: this.props.cornerBorderWidth,
-              borderBottomWidth: this.props.cornerBorderWidth
-            }
-          ]}/>
+              this.getCornerColor(),
+              this.getCornerSize(),
+              styles.bottomRightCorner,
+              {
+                borderRightWidth: this.props.cornerBorderWidth,
+                borderBottomWidth: this.props.cornerBorderWidth
+              }
+            ]}
+          />
         </View>
 
         <View
           style={[
-          this.getBackgroundColor(),
-          styles.topMask, {
-            bottom: this.getTopMaskHeight() - this.props.finderY * 3,
-            top: 0,
-            width: this.state.topWidth
-          }
-        ]}/>
+            this.getBackgroundColor(),
+            styles.topMask,
+            {
+              bottom: this.getTopMaskHeight() - this.props.finderY * 3,
+              top: 0,
+              width: this.state.topWidth
+            }
+          ]}
+        />
 
         <View
           style={[
-          this.getBackgroundColor(),
-          styles.leftMask, {
-            height: this.getSideMaskHeight(),
-            width: this.getSideMaskWidth() - this.props.finderX ,
-            bottom: this.getTopMaskHeight() - this.props.finderY * 3 - this.getSideMaskHeight()
-          }
-        ]}/>
+            this.getBackgroundColor(),
+            styles.leftMask,
+            {
+              height: this.getSideMaskHeight(),
+              width: this.getSideMaskWidth() - this.props.finderX,
+              bottom:
+                this.getTopMaskHeight() -
+                this.props.finderY * 3 -
+                this.getSideMaskHeight()
+            }
+          ]}
+        />
 
         <View
           style={[
-          this.getBackgroundColor(),
-          styles.rightMask, {
-            height: this.getSideMaskHeight(),
-            width: this.getSideMaskWidth() - this.props.finderX * 3,
-            bottom: this.getTopMaskHeight() - this.props.finderY * 3 - this.getSideMaskHeight()
-          }
-        ]}/>
+            this.getBackgroundColor(),
+            styles.rightMask,
+            {
+              height: this.getSideMaskHeight(),
+              width: this.getSideMaskWidth() - this.props.finderX * 3,
+              bottom:
+                this.getTopMaskHeight() -
+                this.props.finderY * 3 -
+                this.getSideMaskHeight()
+            }
+          ]}
+        />
 
         <View
           style={[
-          this.getBackgroundColor(),
-          styles.bottomMask, {
-            top: this.getBottomMaskHeight() - this.props.finderY,
-            width: this.state.topWidth
-          }
-        ]}/>
+            this.getBackgroundColor(),
+            styles.bottomMask,
+            {
+              top: this.getBottomMaskHeight() - this.props.finderY,
+              width: this.state.topWidth
+            }
+          ]}
+        />
 
         <View
           style={{
-          position: 'absolute',
-          bottom: this.props.hintTextPosition
-        }}>
-          <Text style={[this.props.hintTextStyle,{top:this.props.finderY,left:this.props.finderX}]}>{this.props.hintText}</Text>
+            position: "absolute",
+            bottom: this.props.hintTextPosition
+          }}
+        >
+          <Text
+            style={[
+              this.props.hintTextStyle,
+              { top: this.props.finderY, left: this.props.finderX }
+            ]}
+          >
+            {this.props.hintText}
+          </Text>
         </View>
-
       </View>
     );
   }
@@ -308,9 +358,8 @@ export default class QRScannerView extends Component {
 
   scannerLineMove() {
     this.state.animatedValue.setValue(0); //Reset Rotate animation value to 0
-    Animated.timing(
-      this.state.animatedValue,
-      {toValue: this.props.rectHeight,
+    Animated.timing(this.state.animatedValue, {
+      toValue: this.props.rectHeight,
       duration: this.props.scanBarAnimateTime,
       easing: Easing.linear
     }).start(() => this.scannerLineMove());
@@ -319,51 +368,51 @@ export default class QRScannerView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
     top: 0,
     right: 0,
     left: 0
   },
   viewfinder: {
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center"
   },
   topLeftCorner: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0
   },
   topRightCorner: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 0
   },
   bottomLeftCorner: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0
   },
   bottomRightCorner: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 0
   },
   topMask: {
-    position: 'absolute',
+    position: "absolute",
     top: 0
   },
   leftMask: {
-    position: 'absolute',
+    position: "absolute",
     left: 0
   },
   rightMask: {
-    position: 'absolute',
+    position: "absolute",
     right: 0
   },
   bottomMask: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0
   }
 });
