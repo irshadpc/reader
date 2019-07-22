@@ -1,6 +1,6 @@
-import React, {PureComponent} from 'react';
-import { RNCamera } from 'react-native-camera';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from "react";
+import { RNCamera } from "react-native-camera";
+import PropTypes from "prop-types";
 
 import {
   StyleSheet,
@@ -11,10 +11,10 @@ import {
   Platform,
   PixelRatio,
   StatusBar
-} from 'react-native';
+} from "react-native";
 
-import QRScannerView from './QRScannerView'
-const pixelRatio = PixelRatio.get()
+import QRScannerView from "./QRScannerView";
+const pixelRatio = PixelRatio.get();
 
 /**
  * Scanning interface
@@ -27,36 +27,45 @@ export default class QRScanner extends PureComponent {
     this.state = {
       scanning: false,
       barCodeSize: {}
-    }
+    };
   }
 
-  static defaultProps =  {
-    onRead: ()=>{},
-    renderTopView: () =>{},
-    renderBottomView: ()=><View style={{flex:1,backgroundColor:'#0000004D'}}/>,
+  static defaultProps = {
+    onRead: () => {},
+    renderTopView: () => {},
+    renderBottomView: () => (
+      <View style={{ flex: 1, backgroundColor: "#0000004D" }} />
+    ),
     rectHeight: 200,
     rectWidth: 200,
-    flashMode: false,   // Flashlight mode
-    finderX: 0,         // Viewfinder X-axis offset
-    finderY: 0,         // Viewfinder Y-axis offset
-    zoom: 0.2,          // Zoom range 0 - 1
+    flashMode: false, // Flashlight mode
+    finderX: 0, // Viewfinder X-axis offset
+    finderY: 0, // Viewfinder Y-axis offset
+    zoom: 0.2, // Zoom range 0 - 1
     translucent: false,
     isRepeatScan: false
-  }
-  
+  };
+
   render() {
     return (
-      <View style={{
-        flex: 1
-      }}>
-        <RNCamera
-         style={{
+      <View
+        style={{
           flex: 1
         }}
+      >
+        <RNCamera
+          style={{
+            flex: 1
+          }}
           onBarCodeRead={this._handleBarCodeRead}
           barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-          flashMode={!this.props.flashMode ? RNCamera.Constants.FlashMode.off : RNCamera.Constants.FlashMode.torch} 
-          zoom={this.props.zoom}>
+          flashMode={
+            !this.props.flashMode
+              ? RNCamera.Constants.FlashMode.off
+              : RNCamera.Constants.FlashMode.torch
+          }
+          zoom={this.props.zoom}
+        >
           <View style={[styles.topButtonsContainer, this.props.topViewStyle]}>
             {this.props.renderTopView()}
           </View>
@@ -83,8 +92,11 @@ export default class QRScanner extends PureComponent {
             isShowScanBar={this.props.isShowScanBar}
             finderX={this.props.finderX}
             finderY={this.props.finderY}
-            returnSize={this.barCodeSize}/>
-          <View style={[styles.bottomButtonsContainer, this.props.bottomViewStyle]}>
+            returnSize={this.barCodeSize}
+          />
+          <View
+            style={[styles.bottomButtonsContainer, this.props.bottomViewStyle]}
+          >
             {this.props.renderBottomView()}
           </View>
         </RNCamera>
@@ -94,36 +106,44 @@ export default class QRScanner extends PureComponent {
 
   isShowCode = false;
 
-  barCodeSize = (size) => this.setState({barCodeSize:size})
+  barCodeSize = size => this.setState({ barCodeSize: size });
 
-  returnMax= (a,b) =>  a > b ? a : b
+  returnMax = (a, b) => (a > b ? a : b);
 
-  returnMin= (a,b) =>  a < b ? a : b
+  returnMin = (a, b) => (a < b ? a : b);
 
-  iosBarCode = (e) => {
-    let x = Number(e.bounds.origin.x)
-    let y = Number(e.bounds.origin.y)
-    let width = e.bounds.size.width
-    let height = e.bounds.size.height
-    let viewMinX = this.state.barCodeSize.x - this.props.finderX
-    let viewMinY = this.state.barCodeSize.y - this.props.finderY
-    let viewMaxX = this.state.barCodeSize.x + this.state.barCodeSize.width - width - this.props.finderX
-    let viewMaxY = this.state.barCodeSize.y + this.state.barCodeSize.height - height - this.props.finderY
-    if ((x > viewMinX && y > viewMinY) && (x < viewMaxX && y < viewMaxY)) {
+  iosBarCode = e => {
+    let x = Number(e.bounds.origin.x);
+    let y = Number(e.bounds.origin.y);
+    let width = e.bounds.size.width;
+    let height = e.bounds.size.height;
+    let viewMinX = this.state.barCodeSize.x - this.props.finderX;
+    let viewMinY = this.state.barCodeSize.y - this.props.finderY;
+    let viewMaxX =
+      this.state.barCodeSize.x +
+      this.state.barCodeSize.width -
+      width -
+      this.props.finderX;
+    let viewMaxY =
+      this.state.barCodeSize.y +
+      this.state.barCodeSize.height -
+      height -
+      this.props.finderY;
+    if (x > viewMinX && y > viewMinY && (x < viewMaxX && y < viewMaxY)) {
       if (this.props.isRepeatScan) {
         Vibration.vibrate();
-        this.props.onRead(e)
+        this.props.onRead(e);
       } else {
         if (!this.isShowCode) {
           this.isShowCode = true;
           Vibration.vibrate();
-          this.props.onRead(e)
+          this.props.onRead(e);
         }
       }
     }
-  }
+  };
 
-  androidBarCode = (e) => {
+  androidBarCode = e => {
     // if (!e.bounds[0] || !e.bounds[1] || !e.bounds[2] || !e.bounds[3]) return null;
     // const leftBottom = {x: e.bounds[0].x / pixelRatio, y: e.bounds[0].y / pixelRatio}
     // const leftTop= {x: e.bounds[1].x / pixelRatio, y: e.bounds[1].y / pixelRatio}
@@ -152,43 +172,43 @@ export default class QRScanner extends PureComponent {
     //   }
     // }
 
-     // The following is not limited to the scanning area
+    // The following is not limited to the scanning area
     if (this.props.isRepeatScan) {
       Vibration.vibrate();
-      this.props.onRead(e)
+      this.props.onRead(e);
     } else {
       if (!this.isShowCode) {
         this.isShowCode = true;
         Vibration.vibrate();
-        this.props.onRead(e)
+        this.props.onRead(e);
       }
     }
-  }
+  };
 
-  _handleBarCodeRead = (e) => {
+  _handleBarCodeRead = e => {
     switch (Platform.OS) {
-      case 'ios':
-    this.iosBarCode(e);
+      case "ios":
+        this.iosBarCode(e);
         break;
-      case 'android':
+      case "android":
         this.androidBarCode(e);
         break;
       default:
         break;
     }
-  }
+  };
 }
 
 const styles = StyleSheet.create({
   topButtonsContainer: {
-    position: 'absolute',
+    position: "absolute",
     height: 100,
     top: 0,
     left: 0,
     right: 0
   },
   bottomButtonsContainer: {
-    position: 'absolute',
+    position: "absolute",
     height: 100,
     bottom: 0,
     left: 0,
@@ -228,4 +248,4 @@ QRScanner.propTypes = {
   finderY: PropTypes.number,
   zoom: PropTypes.number,
   translucent: PropTypes.bool
-}
+};

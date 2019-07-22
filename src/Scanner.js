@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity
 } from "react-native";
-import { QRscanner } from "./QRScanner";
+import QRscanner from "./QRScanner";
 import { ToastAndroid } from "react-native";
 
 export default class Scanner extends Component {
@@ -47,9 +47,6 @@ export default class Scanner extends Component {
     );
   };
   onRead = res => {
-    console.log(
-      "888888888888888888888888888888888888888888888888888888888888888888888888888888888"
-    );
     console.log(res);
     ToastAndroid.show(res.data, ToastAndroid.SHORT);
   };
